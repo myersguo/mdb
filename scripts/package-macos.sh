@@ -3,17 +3,16 @@ set -euo pipefail
 cd "$(dirname "$0")/.."
 
 bundle_path="${1:-src-tauri/target/release/bundle/macos/MDB.app}"
-version="$(node --input-type=module <<'NODE'
-import { readFileSync } from 'node:fs';
-const version = JSON.parse(readFileSync('package.json')).version;
-const tauriVersion = JSON.parse(readFileSync('src-tauri/tauri.conf.json')).version;
-const cargoVersion = readFileSync('src-tauri/Cargo.toml', 'utf8').match(/^version = "([^"]+)"/m)?.[1];
+version="$(node --input-type=module -e '
+import { readFileSync } from "node:fs";
+const version = JSON.parse(readFileSync("package.json")).version;
+const tauriVersion = JSON.parse(readFileSync("src-tauri/tauri.conf.json")).version;
+const cargoVersion = readFileSync("src-tauri/Cargo.toml", "utf8").match(/^version = "([^"]+)"/m)?.[1];
 if (!/^\d+\.\d+\.\d+(?:-[a-zA-Z0-9.-]+)?$/.test(version) || version !== tauriVersion || version !== cargoVersion) {
-  throw new Error('Package, Cargo and Tauri versions must match.');
+  throw new Error("Package, Cargo and Tauri versions must match.");
 }
 console.log(version);
-NODE
-)"
+')"
 if [[ "$(/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' "$bundle_path/Contents/Info.plist")" != "$version" ]]; then
   echo 'Application version does not match source version.' >&2
   exit 1

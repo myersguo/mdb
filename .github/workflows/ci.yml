@@ -34,6 +34,7 @@ jobs:
           cargo audit --file src-tauri/Cargo.lock
       - name: Validate
         run: |
+          /bin/bash -n scripts/package-macos.sh
           npm run typecheck
           npm test
           cargo fmt --manifest-path src-tauri/Cargo.toml -- --check
