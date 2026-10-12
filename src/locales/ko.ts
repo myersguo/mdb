@@ -1,0 +1,167 @@
+import type { Messages } from "./types";
+
+const messages = {
+  "app.title": "MDB — 데이터베이스 작업 공간",
+  "app.workbench": "데이터베이스 작업 공간",
+  "app.client": "데이터베이스 데스크톱 클라이언트",
+  "nav.databaseNavigation": "데이터베이스 탐색",
+  "nav.connections": "연결",
+  "nav.newConnection": "새 연결",
+  "nav.noConnections": "아직 연결이 없습니다",
+  "nav.addServer": "MySQL을 추가하거나 SQLite 파일 열기",
+  "nav.startBrowsing": "데이터 탐색을 시작하세요",
+  "nav.filterTables": "테이블 필터",
+  "nav.filterPlaceholder": "테이블 필터…",
+  "nav.view": "뷰",
+  "nav.loading": "불러오는 중…",
+  "nav.noMatchingTables": "일치하는 테이블이 없습니다",
+  "nav.noTables": "접근 가능한 테이블이 없습니다",
+  "nav.noDatabases": "접근 가능한 데이터베이스가 없습니다",
+  "nav.localProfiles": "연결 정보는 이 기기에 저장됩니다",
+  "nav.help": "도움말",
+  "nav.language": "언어",
+  "workspace.title": "데이터베이스 작업 공간",
+  "workspace.views": "작업 공간 보기",
+  "workspace.sql": "SQL 쿼리",
+  "workspace.structure": "테이블 구조",
+  "workspace.noDatabase": "선택된 데이터베이스 없음",
+  "workspace.refreshCatalog": "데이터베이스 목록 새로 고침",
+  "workspace.disconnect": "연결 끊기",
+  "status.disconnected": "연결되지 않음",
+  "status.connected": "연결됨",
+  "status.connecting": "연결 중",
+  "status.loadingTables": "테이블 목록 불러오는 중",
+  "status.loadingStructure": "테이블 구조 읽는 중",
+  "status.loadingData": "테이블 데이터 읽는 중",
+  "status.runningSQL": "SQL 실행 중",
+  "status.refreshingCatalog": "목록 새로 고침 중",
+  "status.disconnecting": "연결 끊는 중",
+  "status.tlsEnabled": "TLS 사용",
+  "status.tlsDisabled": "TLS 사용 안 함",
+  "welcome.kicker": "데이터베이스를 하나의 작업 공간에서",
+  "welcome.title": "연결부터 시작하세요",
+  "welcome.description":
+    "테이블 구조를 살펴보고 데이터를 조회하며 SQL을 실행하세요.",
+  "welcome.clientDescription":
+    "가볍고 편리한 데이터베이스 데스크톱 클라이언트.",
+  "welcome.newConnection": "새 데이터베이스 연결",
+  "welcome.editor": "SQL 편집기",
+  "welcome.browse": "데이터 탐색",
+  "help.title": "데이터를 손쉽게 다루세요",
+  "help.close": "도움말 닫기",
+  "help.start":
+    "연결을 만든 다음 데이터베이스와 테이블을 선택하세요. SQL 편집기에서 ⌘ / Ctrl + Enter로 실행하며, 텍스트를 선택하면 선택 영역만 실행합니다.",
+  "help.limits":
+    "SQL은 연결된 데이터베이스의 권한으로 실행되며 쓰기는 직접 반영됩니다. 스크립트를 자동으로 트랜잭션에 묶지 않습니다. 오류 후 쓰기 결과와 트랜잭션 상태를 확인하세요. 테이블은 페이지당 100행, 쿼리는 최대 1,000행과 4 MiB를 표시합니다. 전체 결과가 필요하면 범위를 줄이거나 LIMIT를 추가하세요.",
+  "help.session":
+    "한 번에 하나의 세션을 사용합니다. 연결을 전환하거나 끊으면 세션이 종료되고 미커밋 트랜잭션이 롤백됩니다. 기본 키가 없는 테이블이나 동시 수정 중에는 페이지 순서가 달라질 수 있습니다.",
+  "editor.region": "SQL 편집기",
+  "editor.title": "쿼리 편집기",
+  "editor.supportsScripts": "SQL 스크립트 지원",
+  "editor.run": "SQL 실행",
+  "editor.selectionHint": "텍스트 선택 시 선택 영역만 실행",
+  "editor.shortcut": "⌘ / Ctrl + Enter로 실행",
+  "table.fieldsHint": "필드, 유형 및 키",
+  "table.approxRows": "약 {count}행",
+  "table.browse": "데이터 탐색",
+  "table.openSQL": "SQL에서 열기",
+  "table.refresh": "테이블 새로 고침",
+  "result.region": "결과 영역",
+  "result.title": "결과",
+  "result.rows": "{count}행",
+  "result.fields": "{count}개 필드",
+  "result.affected": "영향을 받은 행: {count}",
+  "result.previousPage": "이전 페이지",
+  "result.nextPage": "다음 페이지",
+  "result.page": "{page}페이지",
+  "result.set": "결과 {index}",
+  "result.limit":
+    "표시 한도에 도달했습니다(1,000행 / 4 MiB / 결과 집합 20개). 결과가 불완전하므로 쿼리 범위를 좁히세요.",
+  "result.waiting": "첫 쿼리를 기다립니다",
+  "result.waitingHint":
+    "위에서 SQL을 작성하고 실행하면 여기에 결과가 표시됩니다.",
+  "result.complete": "실행 완료",
+  "result.gridLabel": "쿼리 결과 표, 가로 스크롤 가능",
+  "result.rowNumber": "행 번호",
+  "result.emptyString": "빈 문자열",
+  "result.tooLarge": "결과가 표시 한도를 초과했습니다",
+  "result.noRecords": "반환된 레코드가 없습니다",
+  "result.narrowHint": "쿼리 범위를 좁힌 후 다시 실행하세요.",
+  "result.emptyHint":
+    "열 구조가 표시되어 있으며 현재 결과 집합은 비어 있습니다.",
+  "connection.settings": "연결 설정",
+  "connection.subtitle": "데이터베이스에 연결",
+  "connection.close": "연결 설정 닫기",
+  "connection.defaultName": "로컬 MySQL",
+  "connection.name": "연결 이름",
+  "connection.host": "호스트",
+  "connection.port": "포트",
+  "connection.username": "사용자 이름",
+  "connection.password": "비밀번호",
+  "connection.passwordPlaceholder": "이 기기에 저장하여 다음 연결에 사용",
+  "connection.database": "기본 데이터베이스",
+  "connection.optional": "선택 사항",
+  "connection.databasePlaceholder":
+    "비워두면 접근 가능한 데이터베이스를 탐색합니다",
+  "connection.tls": "TLS 사용 및 서버 인증서 확인",
+  "connection.privacy":
+    "TLS 해제는 로컬 또는 신뢰할 수 있는 네트워크에서만 사용하세요. 비밀번호는 시스템 자격 증명 저장소에 저장됩니다.",
+  "connection.disconnectFirst": "먼저 연결을 끊으세요",
+  "connection.deleteHint": "저장된 연결 정보 삭제",
+  "connection.delete": "연결 삭제",
+  "connection.test": "연결 테스트",
+  "connection.save": "저장 후 연결",
+  "connection.testSuccess": "연결 성공 · {engine} {version}",
+  "error.close": "오류 닫기",
+  "error.readProfiles": "연결 설정을 읽을 수 없습니다: {message}",
+  "error.invalidProfiles":
+    "로컬 연결 설정이 잘못되었습니다. 원본은 보존되었으니 mdb.connections.v1을 백업하거나 복구하세요.",
+  "error.desktopRequired":
+    "MDB 데스크톱 앱에서 연결하세요. 브라우저 미리보기는 화면만 표시합니다. npm run tauri dev로 데스크톱 앱을 실행하세요.",
+  "error.requiredFields": "연결 이름과 데이터베이스의 필수 설정을 입력하세요.",
+  "error.invalidIdentifier":
+    "데이터베이스 및 테이블 이름은 비어 있거나 NUL을 포함할 수 없습니다.",
+  "error.invalidConnection": "호스트, 사용자 이름 및 유효한 포트를 입력하세요.",
+  "error.connectTimeout":
+    "연결 시간이 초과되었습니다(10초). 호스트, 포트 및 네트워크를 확인하세요.",
+  "error.closeTimeout":
+    "연결 테스트는 성공했지만 연결 종료 시간이 초과되었습니다.",
+  "error.disconnectTimeout":
+    "로컬 세션이 종료되었으나 서버가 제때 확인하지 않았습니다.",
+  "error.invalidSQL": "SQL은 비어 있거나 1 MiB를 초과할 수 없습니다.",
+  "error.sessionExpired": "연결이 만료되었습니다. 다시 연결하세요.",
+  "error.queryTimeout":
+    "쿼리가 30초를 초과하여 연결이 종료되었습니다. 서버에서 계속 실행 중일 수 있으며 쓰기 결과가 불확실합니다. 확인 후 다시 작업하세요.",
+  "error.partialExecution":
+    "앞선 문장이 실행되었을 수 있습니다. 쓰기 결과와 트랜잭션 상태를 확인한 후 다시 작업하세요.",
+  "error.outcomeUnknown":
+    "작업 결과가 불확실합니다. 다시 작업하기 전에 서버 상태를 확인하세요.",
+  "warning.tableCatalog":
+    "테이블 목록이 표시 한도를 초과했습니다. SQL로 information_schema를 조회하여 전체 목록을 확인하세요.",
+  "warning.databaseCatalog":
+    "데이터베이스 목록이 표시 한도를 초과했습니다. SQL로 전체 목록을 조회하세요.",
+  "status.loadingCredentials": "저장된 비밀번호 읽는 중",
+  "status.deletingConnection": "연결 삭제 중",
+  "connection.edit": "{name} 연결 편집",
+  "connection.connectHint": "더블 클릭 또는 Enter로 연결",
+  "error.credentialAccess":
+    "시스템 자격 증명 저장소에 접근할 수 없습니다. 잠금을 해제하고 다시 시도하세요.",
+  "connection.engine": "데이터베이스 유형",
+  "connection.sqliteFile": "SQLite 데이터베이스 파일",
+  "connection.sqlitePathPlaceholder": "기존 .sqlite 또는 .db 파일의 절대 경로",
+  "connection.selectFile": "데이터베이스 파일 선택",
+  "connection.sqliteDefaultName": "로컬 SQLite",
+  "connection.sqliteNote":
+    "기존 SQLite 파일을 엽니다. 읽기와 쓰기는 이 파일에 직접 반영됩니다.",
+  "error.invalidSqliteFile":
+    "기존 SQLite 데이터베이스 파일을 절대 경로로 지정하세요.",
+  "error.sqliteTimeout":
+    "SQLite 쿼리가 30초를 초과하여 중단되고 연결이 종료되었습니다. 앞선 문장에서 데이터가 기록되었을 수 있습니다. 결과를 확인한 후 다시 작업하세요.",
+  "error.databaseTaskFailed":
+    "데이터베이스 작업 스레드가 실패했습니다. 다시 연결하세요.",
+  "editor.sqliteScope": "SQLite SQL 범위",
+  "editor.sqliteContext": "{database} 탐색은 한정되지 않은 테이블 이름의 해석을 바꾸지 않습니다. 대상 데이터베이스를 지정하려면 {database}.table 같은 스키마 한정 이름을 사용하세요.",
+  "error.profileRestore": "자격 증명 작업 실패 후 연결 설정을 복원하지 못했습니다. 이 창을 유지하고 다시 연결하기 전에 저장 또는 삭제를 다시 시도하세요.",
+} satisfies Messages;
+
+export default messages;

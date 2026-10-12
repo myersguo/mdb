@@ -1,0 +1,51 @@
+name: macOS validation
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  macos:
+    runs-on: macos-14
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: '24'
+          cache: npm
+      - name: Install Rust and MySQL
+        run: |
+          rustup toolchain install stable --profile minimal --component rustfmt --component clippy
+          rustup default stable
+          rustup target add aarch64-apple-darwin
+          brew install mysql
+      - run: npm ci
+      - name: Check dependencies
+        run: |
+          npm audit
+          cargo install cargo-audit --version 0.22.2 --locked
+          cargo audit --file src-tauri/Cargo.lock
+      - name: Validate
+        run: |
+          npm run typecheck
+          npm test
+          cargo fmt --manifest-path src-tauri/Cargo.toml -- --check
+          cargo clippy --locked --manifest-path src-tauri/Cargo.toml --all-targets -- -D warnings
+          cargo test --locked --manifest-path src-tauri/Cargo.toml
+          npm run test:mysql
+      - name: Build and verify arm64 archive
+        run: |
+          npm run build:app -- --target aarch64-apple-darwin
+          npm run package:macos -- src-tauri/target/aarch64-apple-darwin/release/bundle/macos/MDB.app
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: MDB-macos-arm64
+          path: release/
+          if-no-files-found: error
