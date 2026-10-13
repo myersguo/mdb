@@ -85,6 +85,79 @@ function renderApp() {
   );
 }
 
+it("collapses and restores the sidebar without losing its width, connection or SQL draft", async () => {
+  renderApp();
+  const user = await connect();
+  const sidebar = screen.getByRole("complementary", { name: "数据库导航" });
+  const resizer = screen.getByRole("separator", { name: "调整侧栏宽度" });
+  fireEvent.keyDown(resizer, { key: "ArrowRight" });
+  const area = screen.getByRole("textbox", {
+    name: "SQL 查询",
+  }) as HTMLTextAreaElement;
+  fireEvent.change(area, { target: { value: "SELECT 99;" } });
+  vi.mocked(invoke).mockClear();
+
+  await user.click(screen.getByRole("button", { name: "收起侧栏" }));
+  expect(sidebar.hidden).toBe(true);
+  expect(screen.queryByRole("separator")).toBeNull();
+  expect(area.value).toBe("SELECT 99;");
+  expect(
+    screen.getByRole("button", { name: "展开侧栏" }).getAttribute("aria-expanded"),
+  ).toBe("false");
+  expect(sidebar.parentElement?.style.gridTemplateColumns).toBe("0px minmax(0, 1fr)");
+
+  await user.click(screen.getByRole("button", { name: "展开侧栏" }));
+  expect(sidebar.hidden).toBe(false);
+  expect(resizer.getAttribute("aria-valuenow")).toBe("258");
+  expect(sidebar.parentElement?.style.gridTemplateColumns).toBe(
+    "258px minmax(0, 1fr)",
+  );
+  expect(screen.getByRole("button", { name: "shop" })).toBeTruthy();
+  expect(area.value).toBe("SELECT 99;");
+  expect(invoke).not.toHaveBeenCalled();
+});
+
+it("bounds keyboard sidebar resizing and leaves unrelated keys alone", () => {
+  renderApp();
+  const resizer = screen.getByRole("separator", { name: "调整侧栏宽度" });
+  fireEvent.keyDown(resizer, { key: "Home" });
+  fireEvent.keyDown(resizer, { key: "ArrowLeft" });
+  expect(resizer.getAttribute("aria-valuenow")).toBe("200");
+  fireEvent.keyDown(resizer, { key: "End" });
+  fireEvent.keyDown(resizer, { key: "ArrowRight" });
+  expect(resizer.getAttribute("aria-valuenow")).toBe("480");
+  fireEvent.keyDown(resizer, { key: "Tab" });
+  expect(resizer.getAttribute("aria-valuenow")).toBe("480");
+});
+
+it("resizes with captured pointer movement, ignores other pointers and stops after capture is lost", () => {
+  renderApp();
+  const resizer = screen.getByRole("separator", { name: "调整侧栏宽度" });
+  const capture = vi.fn();
+  Object.defineProperty(resizer, "setPointerCapture", { value: capture });
+  const pointer = (name: string, x: number, pointerId = 1, button = 0) => {
+    const event = new MouseEvent(name, { bubbles: true, clientX: x, button });
+    Object.defineProperty(event, "pointerId", { value: pointerId });
+    fireEvent(resizer, event);
+  };
+  pointer("pointerdown", 248, 1, 2);
+  expect(capture).not.toHaveBeenCalled();
+  pointer("pointerdown", 248);
+  expect(capture).toHaveBeenCalledWith(1);
+  pointer("pointermove", 348, 2);
+  expect(resizer.getAttribute("aria-valuenow")).toBe("248");
+  pointer("pointermove", 348);
+  expect(resizer.getAttribute("aria-valuenow")).toBe("348");
+  pointer("pointermove", 900);
+  expect(resizer.getAttribute("aria-valuenow")).toBe("480");
+  pointer("pointermove", 0);
+  expect(resizer.getAttribute("aria-valuenow")).toBe("200");
+  pointer("lostpointercapture", 0);
+  pointer("pointermove", 400);
+  expect(resizer.getAttribute("aria-valuenow")).toBe("200");
+  expect(resizer.closest(".resizing-sidebar")).toBeNull();
+});
+
 async function connect() {
   const user = userEvent.setup();
   await user.click(screen.getByRole("button", { name: "新建数据库连接" }));

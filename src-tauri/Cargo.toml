@@ -1,6 +1,6 @@
 [package]
 name = "mdb"
-version = "0.1.0"
+version = "0.1.1"
 description = "Database desktop client"
 authors = ["myersguo"]
 edition = "2024"

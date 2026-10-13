@@ -6,13 +6,13 @@ A desktop database client for **MySQL and SQLite**, built with TypeScript, React
 
 ## Installation
 
-The first release supports Apple Silicon Macs running macOS 11 or later.
+The macOS build supports Apple Silicon Macs running macOS 11 or later.
 
 ```bash
 brew install --cask myersguo/tap/mdb
 ```
 
-Alternatively, download `MDB-0.1.0-macos-arm64.zip` and `SHA256SUMS` from [GitHub Releases](https://github.com/myersguo/mdb/releases). Verify the checksum, extract the archive and move `MDB.app` to Applications.
+Alternatively, download `MDB-0.1.1-macos-arm64.zip` and `SHA256SUMS` from [GitHub Releases](https://github.com/myersguo/mdb/releases). Verify the checksum, extract the archive and move `MDB.app` to Applications.
 
 The application is ad-hoc signed, but not Developer ID signed or notarized. macOS may require first-launch approval in Privacy & Security. Windows and Linux builds have not been verified.
 
@@ -22,6 +22,7 @@ The application is ad-hoc signed, but not Developer ID signed or notarized. macO
 - Choose MySQL or SQLite when creating a connection. Open an existing SQLite file using the native file picker or an absolute path, then browse tables, views and fields or execute SQL.
 - Save MySQL passwords in the system credential store by default. Double-click a saved connection, or focus it and press Enter / Space, to connect. Use its edit button to change settings and passwords.
 - Browse accessible databases and tables; filter tables by name or comment.
+- Collapse or expand the sidebar from the workspace header, and drag its right edge to resize it between 200 and 480px. Keyboard users can focus the divider and use arrow keys or Home / End. Collapsing preserves the active connection, SQL draft and width within the current session.
 - Browse table data in pages of 100 rows, ordered by primary key when available.
 - Inspect field types, defaults, key markers and comments.
 - Execute SQL scripts or a selected fragment with ⌘ / Ctrl + Enter.
@@ -119,7 +120,7 @@ npm run build:app
 npm run package:macos
 ```
 
-The packaging command verifies matching package/Cargo/Tauri versions, application version, arm64 architecture and full bundle signature, then extracts the archive and verifies its signature again. Outputs under the ignored `release/` directory are `MDB-0.1.0-macos-arm64.zip`, `SHA256SUMS` and `mdb.rb`. The archive includes LICENSE.
+The packaging command verifies matching package/Cargo/Tauri versions, application version, arm64 architecture and full bundle signature, then extracts the archive and verifies its signature again. Outputs under the ignored `release/` directory are `MDB-0.1.1-macos-arm64.zip`, `SHA256SUMS` and `mdb.rb`. The archive includes LICENSE.
 
 Publish the ZIP and SHA256SUMS under the matching version tag in [GitHub Releases](https://github.com/myersguo/mdb/releases). Verify the downloaded checksum against the cask before updating `mdb.rb` in [homebrew-tap](https://github.com/myersguo/homebrew-tap). Published archives must remain immutable; changes require a new version.
 

@@ -57,11 +57,67 @@ svg {
   min-height: 560px;
 }
 .sidebar {
+  position: relative;
   display: flex;
   flex-direction: column;
   background: #edf1f6;
   border-right: 1px solid var(--line);
   min-height: 0;
+  min-width: 0;
+}
+.sidebar[hidden] {
+  display: none;
+}
+.sidebar-resizer {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  width: 6px;
+  z-index: 10;
+  cursor: col-resize;
+  touch-action: none;
+}
+.sidebar-resizer:focus-visible,
+.sidebar-resizer:focus {
+  outline: none;
+}
+.sidebar-resizer::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: -1px;
+  width: 1px;
+}
+.sidebar-resizer:hover::before,
+.resizing-sidebar .sidebar-resizer::before {
+  background: #9aaac1;
+}
+.sidebar-resizer::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: -2px;
+  width: 3px;
+  height: 24px;
+  border-radius: 2px;
+  background: var(--accent);
+  transform: translateY(-50%);
+  opacity: 0;
+}
+.sidebar-resizer:focus-visible::after {
+  opacity: 1;
+}
+.resizing-sidebar .sidebar-resizer::after {
+  opacity: 0;
+}
+.resizing-sidebar {
+  user-select: none;
+}
+.resizing-sidebar,
+.resizing-sidebar * {
+  cursor: col-resize !important;
 }
 .brand {
   display: flex;
@@ -347,6 +403,7 @@ svg {
   font-size: 10px;
 }
 .workspace {
+  grid-column: 2;
   display: flex;
   flex-direction: column;
   min-width: 0;
@@ -1034,9 +1091,6 @@ svg {
   }
 }
 @media (max-width: 700px) {
-  .app-shell {
-    grid-template-columns: 170px minmax(0, 1fr);
-  }
   .brand {
     padding: 20px 14px;
   }

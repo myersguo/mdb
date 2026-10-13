@@ -10,6 +10,7 @@
 - 新建连接时选择 MySQL 或 SQLite。SQLite 可通过本机文件选择器或绝对路径打开已有数据库文件，支持表、视图、字段浏览及 SQL 读写。
 - 默认将密码保存在本机系统凭据库。已保存连接可双击连接，也可聚焦后按 Enter / Space；旁边的编辑按钮用于修改配置与密码。
 - 浏览账号可访问的数据库和表，按表名或注释筛选。
+- 点击主区域顶部按钮收起/展开侧栏，拖动右边界在 200–480px 间调宽；聚焦分隔线后可用方向键或 Home / End 调整。收起保留当前连接、SQL 草稿和本次会话的宽度。
 - 浏览表数据，每页 100 行；有主键时按主键排序。
 - 查看字段、类型、默认值、索引标记和注释。
 - 执行 SQL，支持选区执行和 ⌘ / Ctrl + Enter。
@@ -105,7 +106,7 @@ npm run build:app
 npm run package:macos
 ```
 
-`package:macos` 检查三处版本号、应用版本、arm64 架构与完整签名，并解压归档再次校验签名。产物在 `release/`：`MDB-0.1.0-macos-arm64.zip`、`SHA256SUMS`、`mdb.rb`。该目录不会提交到源码仓库。
+`package:macos` 检查三处版本号、应用版本、arm64 架构与完整签名，并解压归档再次校验签名。产物在 `release/`：`MDB-0.1.1-macos-arm64.zip`、`SHA256SUMS`、`mdb.rb`。该目录不会提交到源码仓库。
 
 发布时以同一版本标签上传 ZIP 和 SHA256SUMS 到 [GitHub Releases](https://github.com/myersguo/mdb/releases)，确认下载文件的校验和与 cask 一致后，再将生成的 `mdb.rb` 更新到 [homebrew-tap](https://github.com/myersguo/homebrew-tap)。已发布归档不可原地替换；代码或归档变化应升级版本。
 

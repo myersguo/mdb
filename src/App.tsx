@@ -10,6 +10,8 @@ import {
   KeyRound,
   LoaderCircle,
   Network,
+  PanelLeftClose,
+  PanelLeftOpen,
   Play,
   Pencil,
   Plus,
@@ -42,6 +44,8 @@ import {
 import "./App.css";
 
 type Tab = "sql" | "data" | "structure";
+const MIN_SIDEBAR_WIDTH = 200;
+const MAX_SIDEBAR_WIDTH = 480;
 const DEFAULT_SQL = {
   mysql:
     "SELECT\n  VERSION() AS version,\n  CURRENT_USER() AS user_name,\n  DATABASE() AS database_name;",
@@ -92,6 +96,14 @@ export default function App() {
     password?: string;
   } | null>(null);
   const [help, setHelp] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [sidebarWidth, setSidebarWidth] = useState(248);
+  const [resizingSidebar, setResizingSidebar] = useState(false);
+  const sidebarDrag = useRef<{
+    pointerId: number;
+    x: number;
+    width: number;
+  } | null>(null);
   const editor = useRef<HTMLTextAreaElement>(null);
   const gutter = useRef<HTMLDivElement>(null);
   const lock = useRef(false);
@@ -380,8 +392,18 @@ export default function App() {
   }
 
   return (
-    <div className="app-shell">
-      <aside className="sidebar" aria-label={t("nav.databaseNavigation")}>
+    <div
+      className={`app-shell${resizingSidebar ? " resizing-sidebar" : ""}`}
+      style={{
+        gridTemplateColumns: `${sidebarCollapsed ? 0 : sidebarWidth}px minmax(0, 1fr)`,
+      }}
+    >
+      <aside
+        id="database-sidebar"
+        className="sidebar"
+        hidden={sidebarCollapsed}
+        aria-label={t("nav.databaseNavigation")}
+      >
         <div className="brand">
           <div className="brand-icon">
             <Database size={23} strokeWidth={1.8} />
@@ -392,7 +414,7 @@ export default function App() {
             </strong>
             <small>{t("app.workbench")}</small>
           </div>
-          <span className="version-tag">0.1</span>
+          <span className="version-tag">0.1.1</span>
         </div>
         <div className="sidebar-heading">
           <span>{t("nav.connections")}</span>
@@ -538,11 +560,90 @@ export default function App() {
             {t("nav.help")}
           </button>
         </div>
+        <div
+          className="sidebar-resizer"
+          role="separator"
+          tabIndex={0}
+          aria-label={t("nav.resizeSidebar")}
+          aria-controls="database-sidebar"
+          aria-orientation="vertical"
+          aria-valuemin={MIN_SIDEBAR_WIDTH}
+          aria-valuemax={MAX_SIDEBAR_WIDTH}
+          aria-valuenow={sidebarWidth}
+          onPointerDown={(event) => {
+            if (event.button !== 0 || sidebarDrag.current) return;
+            event.preventDefault();
+            event.currentTarget.focus();
+            event.currentTarget.setPointerCapture(event.pointerId);
+            sidebarDrag.current = {
+              pointerId: event.pointerId,
+              x: event.clientX,
+              width: sidebarWidth,
+            };
+            setResizingSidebar(true);
+          }}
+          onPointerMove={(event) => {
+            if (
+              !sidebarDrag.current ||
+              sidebarDrag.current.pointerId !== event.pointerId
+            ) return;
+            setSidebarWidth(
+              Math.max(
+                MIN_SIDEBAR_WIDTH,
+                Math.min(
+                  MAX_SIDEBAR_WIDTH,
+                  sidebarDrag.current.width +
+                    event.clientX -
+                    sidebarDrag.current.x,
+                ),
+              ),
+            );
+          }}
+          onLostPointerCapture={(event) => {
+            if (sidebarDrag.current?.pointerId !== event.pointerId) return;
+            sidebarDrag.current = null;
+            setResizingSidebar(false);
+          }}
+          onKeyDown={(event) => {
+            const widths: Record<string, number> = {
+              ArrowLeft: sidebarWidth - 10,
+              ArrowRight: sidebarWidth + 10,
+              Home: MIN_SIDEBAR_WIDTH,
+              End: MAX_SIDEBAR_WIDTH,
+            };
+            if (!(event.key in widths)) return;
+            event.preventDefault();
+            setSidebarWidth(
+              Math.max(
+                MIN_SIDEBAR_WIDTH,
+                Math.min(MAX_SIDEBAR_WIDTH, widths[event.key]),
+              ),
+            );
+          }}
+        />
       </aside>
 
       <main className="workspace">
         <header className="workspace-header">
           <div className="connection-title">
+            <button
+              className="icon-button"
+              aria-label={t(
+                sidebarCollapsed ? "nav.expandSidebar" : "nav.collapseSidebar",
+              )}
+              title={t(
+                sidebarCollapsed ? "nav.expandSidebar" : "nav.collapseSidebar",
+              )}
+              aria-controls="database-sidebar"
+              aria-expanded={!sidebarCollapsed}
+              onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+            >
+              {sidebarCollapsed ? (
+                <PanelLeftOpen size={18} />
+              ) : (
+                <PanelLeftClose size={18} />
+              )}
+            </button>
             <span className={`status-dot ${session ? "online" : ""}`} />
             <strong>{active?.name ?? t("workspace.title")}</strong>
             <span className="header-divider" />
