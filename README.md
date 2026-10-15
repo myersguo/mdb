@@ -2,6 +2,8 @@
 
 [English](README.md) | [简体中文](README.zh-CN.md)
 
+<img width="2546" height="1624" alt="image" src="https://github.com/user-attachments/assets/c86bc594-31eb-4482-a587-d6e29b0829e3" />
+
 A desktop database client for **MySQL and SQLite**, built with TypeScript, React and Tauri 2. Rust connects directly through `mysql_async` and `rusqlite`; the frontend calls typed Tauri commands.
 
 ## Installation
